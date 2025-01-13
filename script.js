@@ -1,51 +1,61 @@
+const wrapper = document.querySelector('.wrapper');
+const question = document.querySelector('.question');
+const yesBtn = document.querySelector('.yes-btn');
+const noBtn = document.querySelector('.no-btn');
+
 const questions = [
-    "Are You A Girl?",
-    "Are You A Cute Girl?",
-    "You are the Most Beautiful Girl.",
-    "I like You.",
-    "Do You Like Me?",
-    "I Love You Too.",
-    "Let's Go For A Date."
+    "Are you a girl?",
+    "Are you cute?",
+    "Do you like me?",
+    "Think again...",
+    "Do you really don't love me?",
+    "I was knowing you also like me 😁"
 ];
 
 let currentQuestionIndex = 0;
 
-const questionElement = document.querySelector('.question');
-const yesBtn = document.querySelector('.yes-btn');
-const noBtn = document.querySelector('.no-btn');
-const wrapper = document.querySelector('.wrapper');
-const wrapperRect = wrapper.getBoundingClientRect();
+function setQuestion(index) {
+    question.innerHTML = questions[index];
+}
 
-const instructionModal = document.getElementById('instructionModal');
-const startBtn = document.getElementById('startBtn');
+function moveNoButton() {
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const noBtnRect = noBtn.getBoundingClientRect();
 
-// Show modal on page load
-window.onload = () => {
-    instructionModal.style.display = 'block';
-};
+    const maxX = wrapperRect.width - noBtnRect.width;
+    const maxY = wrapperRect.height - noBtnRect.height;
 
-// Start the questions after closing the modal
-startBtn.addEventListener('click', () => {
-    instructionModal.style.display = 'none';
-});
+    const randomX = Math.floor(Math.random() * maxX);
+    const randomY = Math.floor(Math.random() * maxY);
 
-// Handle "Yes" button click
+    noBtn.style.position = 'absolute';
+    noBtn.style.left = `${randomX}px`;
+    noBtn.style.top = `${randomY}px`;
+
+    // Reset any unintended style changes
+    noBtn.style.width = '150px';
+    noBtn.style.height = '40px';
+    noBtn.style.fontSize = '1.2em';
+}
+
 yesBtn.addEventListener('click', () => {
     currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-        questionElement.innerHTML = questions[currentQuestionIndex];
+    if (currentQuestionIndex < questions.length - 1) {
+        setQuestion(currentQuestionIndex);
     } else {
-        questionElement.innerHTML = "Let's Meet With You Soon!!";
+        setQuestion(currentQuestionIndex);
         yesBtn.style.display = 'none';
         noBtn.style.display = 'none';
     }
 });
 
-// Handle "No" button hover
-noBtn.addEventListener('mouseover', () => {
-    const noBtnRect = noBtn.getBoundingClientRect();
-    const i = Math.floor(Math.random() * (wrapperRect.width - noBtnRect.width)) + 1;
-    const j = Math.floor(Math.random() * (wrapperRect.height - noBtnRect.height)) + 1;
-    noBtn.style.left = i + 'px';
-    noBtn.style.top = j + 'px';
+noBtn.addEventListener('mouseover', moveNoButton);
+noBtn.addEventListener('click', moveNoButton);
+
+noBtn.addEventListener('click', () => {
+    if (currentQuestionIndex === 2) {
+        setQuestion(3);
+    } else if (currentQuestionIndex === 3) {
+        setQuestion(4);
+    }
 });
